@@ -26,10 +26,9 @@ namespace LeoAR.Core
         //TODO: must be public?
         public void Initialize()
         {
-            _model = MainMenuFactory.Instance.CreateModel();
-            
+            _model = MainMenuFactory.Instance.CreateModel();            
             _view = MainMenuFactory.Instance.CreateView();
-            _view.Initialize();
+            _view.Initialize(_model.Models);
 
             (_view as IObservable<PreviewModelButtonPressedArgs>).Attach(this as IObserver<PreviewModelButtonPressedArgs>);
         }
@@ -38,7 +37,7 @@ namespace LeoAR.Core
 
         void IObserver<PreviewModelButtonPressedArgs>.OnNotified(object sender, PreviewModelButtonPressedArgs eventArgs)
         {
-            (this as IObservable<PreviewModelButtonPressedArgs>).Notify(null);
+            (this as IObservable<PreviewModelButtonPressedArgs>).Notify(eventArgs);
         }
 
         #region IState Interface Implementation

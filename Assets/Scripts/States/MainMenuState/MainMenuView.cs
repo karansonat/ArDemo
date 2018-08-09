@@ -10,13 +10,18 @@ namespace LeoAR.UI
     public class PreviewModelButtonPressedArgs : EventArgs
     {
         public Model SelectedModel { get; private set; }
+        public PreviewModelButtonPressedArgs(Model selectedModel) : base()
+        {
+            SelectedModel = selectedModel;
+        }
     }
 
     public class MainMenuView : MonoBehaviour, IObservable<PreviewModelButtonPressedArgs>
     {
         #region Fields
 
-        [SerializeField] private Button _playButton;
+        [SerializeField] private GameObject _modelButtonPrefab;
+        [SerializeField] private RectTransform _buttonContainer;
         private PreviewModelButtonPressedArgs _previewModelButtonPressedArgs;
 
         #endregion //Fields
@@ -29,22 +34,23 @@ namespace LeoAR.UI
 
         #region Public Methods
 
-        public void Initialize()
+        public void Initialize(List<Model> availableModels)
         {
-            _previewModelButtonPressedArgs = new PreviewModelButtonPressedArgs();
-
-            _playButton.onClick.RemoveAllListeners();
-            _playButton.onClick.AddListener(OnPlayButtonPressed);
+            foreach (var model in availableModels)
+            {
+                var button = Instantiate(_modelButtonPrefab);
+                button.transform.SetParent(_buttonContainer, false);
+                button.GetComponentInChildren<Text>().text = model.ModelName;
+                button.GetComponent<Button>().onClick.AddListener(() =>
+                {
+                    (this as IObservable<PreviewModelButtonPressedArgs>).Notify(new PreviewModelButtonPressedArgs(model));
+                });
+            }
         }
 
         #endregion //Public Methods
 
         #region Private Methods
-
-        private void OnPlayButtonPressed()
-        {
-            (this as IObservable<PreviewModelButtonPressedArgs>).Notify(null);
-        }
 
         #endregion //Private Methods
 

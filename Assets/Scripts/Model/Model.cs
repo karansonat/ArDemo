@@ -10,7 +10,7 @@ namespace LeoAR.Core
 
         [SerializeField] private GameObject _3dModel;
         [SerializeField] private string _name;
-        public string Name
+        public string ModelName
         {
             get { return _name; }
         }
@@ -19,6 +19,12 @@ namespace LeoAR.Core
         public List<AttackAction> Animations
         {
             get { return _animations; }
+        }
+
+        [SerializeField] float _moveSpeed = 2f;
+        public float MoveSpeed
+        {
+            get { return _moveSpeed; }
         }
         
         #endregion // Fields

@@ -11,11 +11,12 @@ namespace LeoAR.Core
         ModelPreviewState
     }
     
-    public class StateController : MonoBehaviour, IObserver<PreviewModelButtonPressedArgs>
+    public class StateController : MonoBehaviour, IObserver<PreviewModelButtonPressedArgs>, IObserver<BackButtonPressedArgs>
     {
         #region Fields
 
         private IState _activeState;
+        private Model _selectedModel;
 
         #endregion //Fields
 
@@ -61,6 +62,8 @@ namespace LeoAR.Core
                     break;
                 case StateType.ModelPreviewState:
                     _activeState = StateFactory.Instance.CreateModelPreviewState();
+                    (_activeState as IObservable<BackButtonPressedArgs>).Attach(this as IObserver<BackButtonPressedArgs>);
+                    (_activeState as ModelPreviewState).Initialize(_selectedModel);
                     break;
             }
 
@@ -77,7 +80,13 @@ namespace LeoAR.Core
 
         void IObserver<PreviewModelButtonPressedArgs>.OnNotified(object sender, PreviewModelButtonPressedArgs eventArgs)
         {
+            _selectedModel = eventArgs.SelectedModel;
             SwitchState(StateType.ModelPreviewState);
+        }
+
+        void IObserver<BackButtonPressedArgs>.OnNotified(object sender, BackButtonPressedArgs eventArgs)
+        {
+            SwitchState(StateType.MainMenuState);
         }
 
         #endregion IObserver Interface Implementation
