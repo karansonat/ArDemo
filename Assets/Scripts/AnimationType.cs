@@ -1,6 +1,6 @@
 ﻿namespace LeoAR.Core
 {
-    public enum AttackAction
+    public enum AnimationType
     {
         Jump = 0,
         BiteRigh,

@@ -1,11 +1,15 @@
 ﻿using MalbersAnimations;
 using System;
+using System.Collections;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace LeoAR.Core
 {
-    public class ModelPreviewState : IState, IObserver<ActionAnimationTriggeredArgs>, IObserver<VirtualJoystickArgs>, IObserver<BackButtonPressedArgs>, IObservable<BackButtonPressedArgs>
+    public class ModelPreviewState : IState, IObserver<ActionAnimationTriggeredArgs>,
+                                             IObserver<VirtualJoystickArgs>, 
+                                             IObserver<BackButtonPressedArgs>, IObservable<BackButtonPressedArgs>,
+                                             IObserver<SequenceAnimationTriggeredArgs>
     {
         #region Fields
 
@@ -49,6 +53,7 @@ namespace LeoAR.Core
             (_view as IObservable<ActionAnimationTriggeredArgs>).Attach(this as IObserver<ActionAnimationTriggeredArgs>);
             (_view as IObservable<VirtualJoystickArgs>).Attach(this as IObserver<VirtualJoystickArgs>);
             (_view as IObservable<BackButtonPressedArgs>).Attach(this as IObserver<BackButtonPressedArgs>);
+            (_view as IObservable<SequenceAnimationTriggeredArgs>).Attach(this as IObserver<SequenceAnimationTriggeredArgs>);
         }
 
         private void UnRegisterEvents()
@@ -56,6 +61,7 @@ namespace LeoAR.Core
             (_view as IObservable<ActionAnimationTriggeredArgs>).Detach(this as IObserver<ActionAnimationTriggeredArgs>);
             (_view as IObservable<VirtualJoystickArgs>).Detach(this as IObserver<VirtualJoystickArgs>);
             (_view as IObservable<BackButtonPressedArgs>).Detach(this as IObserver<BackButtonPressedArgs>);
+            (_view as IObservable<SequenceAnimationTriggeredArgs>).Detach(this as IObserver<SequenceAnimationTriggeredArgs>);
         }
 
         private void DestroyGameObjects()
@@ -64,6 +70,56 @@ namespace LeoAR.Core
             Object.Destroy(_animal.gameObject);
             Object.Destroy(_model);
             Object.Destroy(_view.gameObject);
+        }
+
+        private IEnumerator SequenceAnimationRoutine(int actionID1, int actionID2, float delay1, float delay2)
+        {
+            //First Delay
+            yield return new WaitForSeconds(delay1);
+
+            //Animation 1
+            PlayAnimation(actionID1);
+
+            //Wait until animation state begin.
+            while (_animal.CurrentAnimState == AnimTag.Idle)
+            {
+                yield return null;
+            }
+
+            //Wait until finished
+            while (_animal.CurrentAnimState != AnimTag.Idle)
+                yield return null;
+
+            //Second Delay
+            yield return new WaitForSeconds(delay2);
+
+            //Animation 2
+            PlayAnimation(actionID2);
+
+            //Wait until animation state begin.
+            while (_animal.CurrentAnimState == AnimTag.Idle)
+            {
+                yield return null;
+            }
+
+            //Wait until finished
+            while (_animal.CurrentAnimState != AnimTag.Idle)
+                yield return null;
+
+            //Make play sequence button interactable
+            _view.ToggleSequencePlayButton(true);
+        }
+
+        private void PlayAnimation(int id)
+        {
+            if (id == 0)
+            {
+                _animal.SetJump();
+            }
+            else
+            {
+                _animal.SetAttack(id);
+            }
         }
 
         #endregion //Private Methods
@@ -83,6 +139,7 @@ namespace LeoAR.Core
 
         void IState.Update()
         {
+
             if (_animal != null)
             {
                 _followCameraController.Follow();
@@ -97,14 +154,7 @@ namespace LeoAR.Core
         {
             if (eventArgs != null && _animal != null)
             {
-                if (eventArgs.ActionID == 0)
-                {
-                    _animal.SetJump();
-                }
-                else
-                {
-                    _animal.SetAttack(eventArgs.ActionID);
-                }
+                PlayAnimation(eventArgs.ActionID);
             }
         }
 
@@ -137,6 +187,14 @@ namespace LeoAR.Core
         void IObserver<BackButtonPressedArgs>.OnNotified(object sender, BackButtonPressedArgs eventArgs)
         {
             (this as IObservable<BackButtonPressedArgs>).Notify(null);
+        }
+
+        void IObserver<SequenceAnimationTriggeredArgs>.OnNotified(object sender, SequenceAnimationTriggeredArgs eventArgs)
+        {
+            UnityMainThreadDispatcher.Instance().Enqueue(SequenceAnimationRoutine(eventArgs.ActionID1,
+                                                                                  eventArgs.ActionID2,
+                                                                                  eventArgs.Timer1,
+                                                                                  eventArgs.Timer2));
         }
 
         #endregion //IObserver Interface Implementation

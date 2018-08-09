@@ -13,6 +13,20 @@ namespace LeoAR.Core
     
     public class StateController : MonoBehaviour, IObserver<PreviewModelButtonPressedArgs>, IObserver<BackButtonPressedArgs>
     {
+        #region Singleton
+
+        private static readonly StateController _instance = new StateController();
+        public static StateController Instance
+        {
+            get { return _instance; }
+        }
+
+        static StateController()
+        {
+        }
+
+        #endregion //Singleton
+
         #region Fields
 
         private IState _activeState;

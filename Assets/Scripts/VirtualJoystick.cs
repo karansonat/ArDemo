@@ -1,4 +1,4 @@
-﻿//Downloaded from https://github.com/maydinunlu/virtual-joystick-unity
+﻿//Original version can be found at https://github.com/maydinunlu/virtual-joystick-unity
 
 using UnityEngine;
 using UnityEngine.EventSystems;

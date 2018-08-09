@@ -21,10 +21,9 @@ namespace LeoAR.Core
 
         #endregion //Events
 
-        #region Public Methods
+        #region Private Methods
 
-        //TODO: must be public?
-        public void Initialize()
+        private void Initialize()
         {
             _model = MainMenuFactory.Instance.CreateModel();            
             _view = MainMenuFactory.Instance.CreateView();
@@ -33,7 +32,7 @@ namespace LeoAR.Core
             (_view as IObservable<PreviewModelButtonPressedArgs>).Attach(this as IObserver<PreviewModelButtonPressedArgs>);
         }
 
-        #endregion Public Methods
+        #endregion //Private Methods
 
         void IObserver<PreviewModelButtonPressedArgs>.OnNotified(object sender, PreviewModelButtonPressedArgs eventArgs)
         {
@@ -44,13 +43,11 @@ namespace LeoAR.Core
 
         void IState.Begin()
         {
-            Debug.Log("MainMenuState.Begin");
             Initialize();
         }
 
         void IState.End()
         {
-            Debug.Log("MainMenuState.End");
             UnityEngine.Object.Destroy(_model);
             UnityEngine.Object.Destroy(_view.gameObject);
         }

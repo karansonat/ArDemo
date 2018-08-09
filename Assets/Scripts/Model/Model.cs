@@ -15,8 +15,8 @@ namespace LeoAR.Core
             get { return _name; }
         }
 
-        [SerializeField] private List<AttackAction> _animations;
-        public List<AttackAction> Animations
+        [SerializeField] private List<AnimationType> _animations;
+        public List<AnimationType> Animations
         {
             get { return _animations; }
         }

@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eae7f671f53bbb44bce870de3efaa38, type: 3}
   m_Name: FollowCameraSettings
   m_EditorClassIdentifier: 
-  _offsetX: 0.31
-  _offsetY: 0.92
-  _offsetZ: 1.86
+  _offsetX: 0.32
+  _offsetY: 1.12
+  _offsetZ: 1.76
   _distance: 7.52
