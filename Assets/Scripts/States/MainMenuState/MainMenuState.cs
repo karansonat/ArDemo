@@ -6,7 +6,7 @@ using System;
 
 namespace LeoAR.Core
 {
-    public class MainMenuState : IState, IObserver<PlayButtonPressedArgs>, IObservable<PlayButtonPressedArgs>
+    public class MainMenuState : IState, IObserver<PreviewModelButtonPressedArgs>, IObservable<PreviewModelButtonPressedArgs>
     {
         #region Fields
 
@@ -17,7 +17,7 @@ namespace LeoAR.Core
 
         #region Events
 
-        private event EventHandler<PlayButtonPressedArgs> _playButtonPressed;
+        private event EventHandler<PreviewModelButtonPressedArgs> _playButtonPressed;
 
         #endregion //Events
 
@@ -31,14 +31,14 @@ namespace LeoAR.Core
             _view = MainMenuFactory.Instance.CreateView();
             _view.Initialize();
 
-            (_view as IObservable<PlayButtonPressedArgs>).Attach(this as IObserver<PlayButtonPressedArgs>);
+            (_view as IObservable<PreviewModelButtonPressedArgs>).Attach(this as IObserver<PreviewModelButtonPressedArgs>);
         }
 
         #endregion Public Methods
 
-        void IObserver<PlayButtonPressedArgs>.OnNotified(object sender, PlayButtonPressedArgs eventArgs)
+        void IObserver<PreviewModelButtonPressedArgs>.OnNotified(object sender, PreviewModelButtonPressedArgs eventArgs)
         {
-            (this as IObservable<PlayButtonPressedArgs>).Notify(null);
+            (this as IObservable<PreviewModelButtonPressedArgs>).Notify(null);
         }
 
         #region IState Interface Implementation
@@ -58,24 +58,24 @@ namespace LeoAR.Core
 
         void IState.Update()
         {
-            Debug.Log("MainMenuState.Update");
+            
         }
 
         #endregion //IState Interface Implementation
 
         #region IObservable Interface Implementation
 
-        void IObservable<PlayButtonPressedArgs>.Attach(IObserver<PlayButtonPressedArgs> observer)
+        void IObservable<PreviewModelButtonPressedArgs>.Attach(IObserver<PreviewModelButtonPressedArgs> observer)
         {
             _playButtonPressed += observer.OnNotified;
         }
 
-        void IObservable<PlayButtonPressedArgs>.Detach(IObserver<PlayButtonPressedArgs> observer)
+        void IObservable<PreviewModelButtonPressedArgs>.Detach(IObserver<PreviewModelButtonPressedArgs> observer)
         {
             _playButtonPressed -= observer.OnNotified;
         }
 
-        void IObservable<PlayButtonPressedArgs>.Notify(PlayButtonPressedArgs eventArgs)
+        void IObservable<PreviewModelButtonPressedArgs>.Notify(PreviewModelButtonPressedArgs eventArgs)
         {
             if (_playButtonPressed != null)
             {

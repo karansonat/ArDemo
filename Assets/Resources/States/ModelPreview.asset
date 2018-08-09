@@ -11,4 +11,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec14a65ef71a48e4bb02963133b3faab, type: 3}
   m_Name: ModelPreview
   m_EditorClassIdentifier: 
-  _models: []
+  _model: {fileID: 11400000, guid: ee44a9d74f0604f42bf8e8ad3cf58961, type: 2}
+  _environmentPrefab: {fileID: 1389985728936996, guid: f07178698c3cb4d4b8f5dfcb6eb02cf9,
+    type: 2}

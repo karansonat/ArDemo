@@ -7,19 +7,23 @@ using System;
 
 namespace LeoAR.UI
 {
-    public class PlayButtonPressedArgs : EventArgs { }
+    public class PreviewModelButtonPressedArgs : EventArgs
+    {
+        public Model SelectedModel { get; private set; }
+    }
 
-    public class MainMenuView : MonoBehaviour, IObservable<PlayButtonPressedArgs>
+    public class MainMenuView : MonoBehaviour, IObservable<PreviewModelButtonPressedArgs>
     {
         #region Fields
 
         [SerializeField] private Button _playButton;
+        private PreviewModelButtonPressedArgs _previewModelButtonPressedArgs;
 
         #endregion //Fields
 
         #region Events
 
-        private event EventHandler<PlayButtonPressedArgs> _playButtonPressed;
+        private event EventHandler<PreviewModelButtonPressedArgs> _previewModelButtonPressed;
 
         #endregion //Events
 
@@ -27,6 +31,8 @@ namespace LeoAR.UI
 
         public void Initialize()
         {
+            _previewModelButtonPressedArgs = new PreviewModelButtonPressedArgs();
+
             _playButton.onClick.RemoveAllListeners();
             _playButton.onClick.AddListener(OnPlayButtonPressed);
         }
@@ -37,28 +43,28 @@ namespace LeoAR.UI
 
         private void OnPlayButtonPressed()
         {
-            (this as IObservable<PlayButtonPressedArgs>).Notify(null);
+            (this as IObservable<PreviewModelButtonPressedArgs>).Notify(null);
         }
 
         #endregion //Private Methods
 
         #region IObservable Interface Implementation
 
-        void IObservable<PlayButtonPressedArgs>.Attach(IObserver<PlayButtonPressedArgs> observer)
+        void IObservable<PreviewModelButtonPressedArgs>.Attach(IObserver<PreviewModelButtonPressedArgs> observer)
         {
-            _playButtonPressed += observer.OnNotified;
+            _previewModelButtonPressed += observer.OnNotified;
         }
 
-        void IObservable<PlayButtonPressedArgs>.Detach(IObserver<PlayButtonPressedArgs> observer)
+        void IObservable<PreviewModelButtonPressedArgs>.Detach(IObserver<PreviewModelButtonPressedArgs> observer)
         {
-            _playButtonPressed -= observer.OnNotified;
+            _previewModelButtonPressed -= observer.OnNotified;
         }
 
-        void IObservable<PlayButtonPressedArgs>.Notify(PlayButtonPressedArgs eventArgs)
+        void IObservable<PreviewModelButtonPressedArgs>.Notify(PreviewModelButtonPressedArgs eventArgs)
         {
-            if (_playButtonPressed != null)
+            if (_previewModelButtonPressed != null)
             {
-                _playButtonPressed.Invoke(this, eventArgs);
+                _previewModelButtonPressed.Invoke(this, eventArgs);
             }
         }
 

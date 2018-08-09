@@ -11,7 +11,7 @@ namespace LeoAR.Core
         ModelPreviewState
     }
     
-    public class StateController : MonoBehaviour, IObserver<PlayButtonPressedArgs>
+    public class StateController : MonoBehaviour, IObserver<PreviewModelButtonPressedArgs>
     {
         #region Fields
 
@@ -23,6 +23,8 @@ namespace LeoAR.Core
 
         private void Awake()
         {
+            DontDestroyOnLoad(gameObject);
+
             //Start with default state
             SwitchState(StateType.MainMenuState);
         }
@@ -55,7 +57,7 @@ namespace LeoAR.Core
             {
                 case StateType.MainMenuState:
                     _activeState = StateFactory.Instance.CreateMainMenuState();
-                    (_activeState as IObservable<PlayButtonPressedArgs>).Attach(this as IObserver<PlayButtonPressedArgs>);
+                    (_activeState as IObservable<PreviewModelButtonPressedArgs>).Attach(this as IObserver<PreviewModelButtonPressedArgs>);
                     break;
                 case StateType.ModelPreviewState:
                     _activeState = StateFactory.Instance.CreateModelPreviewState();
@@ -73,7 +75,7 @@ namespace LeoAR.Core
 
         #region IObserver Interface Implementation
 
-        void IObserver<PlayButtonPressedArgs>.OnNotified(object sender, PlayButtonPressedArgs eventArgs)
+        void IObserver<PreviewModelButtonPressedArgs>.OnNotified(object sender, PreviewModelButtonPressedArgs eventArgs)
         {
             SwitchState(StateType.ModelPreviewState);
         }
